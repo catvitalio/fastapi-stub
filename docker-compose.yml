@@ -1,0 +1,36 @@
+version: '3.8'
+
+x-db-env: &db-env
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: postgres
+  POSTGRES_HOST: db
+
+services:
+  server:
+    build:
+      context: ./
+      dockerfile: ./server/Dockerfile
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - ./server:/server
+    ports:
+      - 8000:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      CORS_ALLOWED_ORIGINS: '["http://localhost:8000", "https://localhost:8000", "http://localhost", "https://localhost"]'
+      <<: *db-env
+
+  db:
+    image: postgres:12
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      interval: 2s
+      timeout: 3s
+      retries: 40
+    environment:
+      <<: *db-env

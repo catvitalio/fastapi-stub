@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "server"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "0.67.0"
+uvicorn = "0.18.2"
+SQLAlchemy = "1.4.39"
+alembic = "1.8.1"
+asyncpg = "0.26.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pytest-cov = "^2.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
