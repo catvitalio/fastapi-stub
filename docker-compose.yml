@@ -1,6 +1,10 @@
 version: '3.8'
 
-x-db-env: &db-env
+x-server-environment: &server-environment
+  DEBUG: 'True'
+  CORS_ALLOWED_ORIGINS: '["http://localhost:8000", "https://localhost:8000", "http://localhost", "https://localhost"]'
+
+x-db-environment: &db-environment
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
   POSTGRES_DB: postgres
@@ -11,7 +15,7 @@ services:
     build:
       context: ./
       dockerfile: ./server/Dockerfile
-    command: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+    command: python -m main
     volumes:
       - ./server:/server
     ports:
@@ -20,8 +24,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      CORS_ALLOWED_ORIGINS: '["http://localhost:8000", "https://localhost:8000", "http://localhost", "https://localhost"]'
-      <<: *db-env
+      <<: [*server-environment, *db-environment]
 
   db:
     image: postgres:12
@@ -33,4 +36,4 @@ services:
       timeout: 3s
       retries: 40
     environment:
-      <<: *db-env
+      <<: *db-environment
