@@ -7,7 +7,7 @@ def main() -> None:
     settings = get_settings()
 
     uvicorn.run(
-        'config.app:get_app',
+        'web.app:get_app',
         host=settings.HOST,
         port=settings.PORT,
         reload=settings.RELOAD,
